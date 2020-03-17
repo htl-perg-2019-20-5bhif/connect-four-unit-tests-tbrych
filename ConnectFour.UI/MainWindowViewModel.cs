@@ -45,10 +45,10 @@ namespace ConnectFour.UI
         public async void Init()
         {
             await RestartGame();
-            GetBoard();
+            await GetBoard();
         }
 
-        private async void GetBoard()
+        internal async Task GetBoard()
         {
             var boardString = await HttpClient.GetStringAsync("/connectfour/board");
             System.Diagnostics.Debug.WriteLine(boardString);
@@ -81,16 +81,16 @@ namespace ConnectFour.UI
             Board = cBoard;
         }
 
-        private async Task RestartGame()
+        internal async Task RestartGame()
         {
             await HttpClient.PutAsync("/connectfour/restart", null);
         }
 
-        public async void SetStone(int column)
+        public async Task SetStone(int column)
         {
             var rowResponse = await HttpClient.PostAsync($"/connectfour/set/{column}", null);
             var res = await rowResponse.Content.ReadAsStringAsync();
-            GetBoard();
+            await GetBoard();
 
             if (res.Equals("1") || res.Equals("2"))
             {
